@@ -1,0 +1,13 @@
+---
+Resources:
+  MySecurityGroups:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Ref AWS::Region
+
+
+# AWS::AccountId 
+# AWS::NotificationARNs
+# AWS::StackId
+# AWS::StackName
+# AWS::Region
