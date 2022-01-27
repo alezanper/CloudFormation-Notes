@@ -1,6 +1,6 @@
 ---
 Resources:
-  MyInstance: # Could be any name
+  MyInstance: # Resource 1
     Type: AWS::EC2::Instance
     Properties:
       AvailabilityZone: us-east-1a
@@ -11,7 +11,8 @@ Resources:
           Value: A Simple Value
       SecurityGroups:
         - !Ref MySecurityGroup
-  MySecurityGroup:
+
+  MySecurityGroup:  # Resource 2
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable port 22
