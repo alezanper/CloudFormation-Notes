@@ -3,11 +3,13 @@ Resources:
   MySecurityGroups:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Ref AWS::Region
-
-
-# AWS::AccountId 
-# AWS::NotificationARNs
-# AWS::StackId
-# AWS::StackName
-# AWS::Region
+      GroupDescription: Security Group to test Pseudoparameters
+      Tags:
+        - Key: AccountId
+          Value: !Ref AWS::AccountId
+        - Key: StackId
+          Value: !Ref AWS::StackId
+        - Key: StackName
+          Value: !Ref AWS::StackName
+        - Key: Region
+          Value: !Ref AWS::Region
