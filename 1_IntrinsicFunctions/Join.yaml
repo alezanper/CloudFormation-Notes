@@ -7,5 +7,12 @@ Resources:
       ImageId: ami-a4c7edb2
       InstanceType: t2.micro
       Tags:
-        - Key: Name
-          Value: !Join [" ", [EC2, Using, Join]]
+        - Key: Tag1
+          Value: !Join [" ", [EC2, Using, Join]]  # Short
+        - Key: Tag2
+          Value: # Long
+            Fn::Join:
+            - " "
+            - - "EC2"
+              - "Using"
+              - "Join"  
