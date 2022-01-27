@@ -1,7 +1,7 @@
 # Mapping enable you to use an input value to determine another value.
 ---
 Mappings:
-  RegionMap:  # It will depends of region on console
+  RegionMap:  # It will depends on region on console
     us-east-1:
       AMI: ami-1853ac65
     us-west-1:
@@ -23,17 +23,15 @@ Resources:
         - AMI  
       InstanceType: t2.micro
       Tags:
-        - Key: Name
-          Value: !Join
-            - ""
-            - - "EC2 Instance for "
-              - !Ref AWS::Region
+        - Key: Region
+          Value: !Ref AWS::Region
       SecurityGroups:
         - !Ref MySecurityGroup
+
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Enable port 22
+      GroupDescription: Enabled port 22
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '22'
