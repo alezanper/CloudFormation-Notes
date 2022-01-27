@@ -14,6 +14,7 @@ Resources:
               - !Ref AWS::Region
       SecurityGroups:
         - !Ref MySecurityGroup
+        
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
