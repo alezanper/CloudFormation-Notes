@@ -25,6 +25,8 @@ Resources:
       Tags:
         - Key: Region
           Value: !Ref AWS::Region
+        - Key: AMI
+          Value: !FindInMap [RegionMap, !Ref AWS::Region, AMI]  
       SecurityGroups:
         - !Ref MySecurityGroup
 
