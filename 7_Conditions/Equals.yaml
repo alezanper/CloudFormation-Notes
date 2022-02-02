@@ -1,0 +1,26 @@
+---
+Parameters:
+  CreateBucket:
+    Type: String
+    Default: no-deploy
+    AllowedValues:
+      - deploy
+      - no-deploy
+
+Conditions: 
+  ShouldCreateBucket:
+    !Equals [!Ref CreateBucket, deploy]
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Condition: ShouldCreateBucket
+    Properties:
+      BucketName: mybucketnamealex2030testing12121
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration: 
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+
