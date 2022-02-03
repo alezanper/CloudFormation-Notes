@@ -14,4 +14,4 @@ Outputs:  # It creates a output tab with information
   Arn:
     Value: !Sub 
       - 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/${Id}'  
-      - { Id: i-12345 }
+      - { Id: !Ref MyInstance }
