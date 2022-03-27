@@ -19,12 +19,13 @@ Parameters:
     Description: Insert the disk size
 
 Resources:
- MyInstance:
+  MyInstance:
     Type: AWS::EC2::Instance
     Properties:
       AvailabilityZone: !Ref InstanceAzParameter
       ImageId: ami-a4c7edb2
       InstanceType: !Ref InstanceTypeParameter
+      SecurityGroups: [!Ref SSHSecurityGroup]
       Volumes:
         - Device: "/dev/sdn"
           VolumeId: !Ref Disk1
@@ -33,24 +34,35 @@ Resources:
         - Device: "/dev/sdo"
           VolumeId: !Ref Disk3
 
+  SSHSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: SSH-SecurityGroup
+      GroupDescription: Enable port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+
 # Disks can be attached and deattached on fly
- Disk1:
-  Type: AWS::EC2::Volume
-  Properties:
-    Size: !Ref DiskSizeParameter
-    AvailabilityZone: !Ref InstanceAzParameter
-  DeletionPolicy: Snapshot
+  Disk1:
+    Type: AWS::EC2::Volume
+    Properties:
+      Size: !Ref DiskSizeParameter
+      AvailabilityZone: !Ref InstanceAzParameter
+    DeletionPolicy: Snapshot
 
- Disk2:
-  Type: AWS::EC2::Volume
-  Properties:
-    Size: !Ref DiskSizeParameter
-    AvailabilityZone: !Ref InstanceAzParameter
-  DeletionPolicy: Snapshot
+  Disk2:
+   Type: AWS::EC2::Volume
+   Properties:
+     Size: !Ref DiskSizeParameter
+     AvailabilityZone: !Ref InstanceAzParameter
+   DeletionPolicy: Snapshot
 
- Disk3:
-  Type: AWS::EC2::Volume
-  Properties:
-    Size: !Ref DiskSizeParameter
-    AvailabilityZone: !Ref InstanceAzParameter
-  DeletionPolicy: Snapshot
+  Disk3:
+   Type: AWS::EC2::Volume
+   Properties:
+     Size: !Ref DiskSizeParameter
+     AvailabilityZone: !Ref InstanceAzParameter
+   DeletionPolicy: Snapshot
