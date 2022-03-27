@@ -66,3 +66,12 @@ Resources:
      Size: !Ref DiskSizeParameter
      AvailabilityZone: !Ref InstanceAzParameter
    DeletionPolicy: Snapshot
+
+Outputs:
+  PublicIp:
+    Description: Public IP address of the newly created EC2 instance
+    Value: !GetAtt MyInstance.PublicIp
+
+  InstanceId:
+    Description: InstanceId of the EC2 instance
+    Value: !Ref MyInstance
