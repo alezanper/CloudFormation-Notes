@@ -1,8 +1,13 @@
+Parameters:
+  S3NameParameter:
+    Type: String
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+
 Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: mySuperBucketName
+      BucketName: !Ref S3NameParameter
       VersioningConfiguration:
         Status: Enabled
       BucketEncryption: 
