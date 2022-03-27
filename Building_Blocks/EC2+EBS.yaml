@@ -1,0 +1,26 @@
+Resources:
+ MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: us-east-1a
+      ImageId: ami-a4c7edb2
+      InstanceType: t2.micro
+      Volumes:
+        - Device: "/dev/sdn"
+          VolumeId: !Ref Disk1
+        - Device: "/dev/sdm"
+          VolumeId: !Ref Disk2
+
+ Disk1:
+  Type: AWS::EC2::Volume
+  Properties:
+    Size: 20
+    AvailabilityZone: us-east-1a
+  DeletionPolicy: Snapshot
+
+ Disk2:
+  Type: AWS::EC2::Volume
+  Properties:
+    Size: 20
+    AvailabilityZone: us-east-1a
+  DeletionPolicy: Snapshot
