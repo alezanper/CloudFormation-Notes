@@ -1,10 +1,30 @@
+Parameters:
+  InstanceTypeParameter:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.nano
+    Description: Enter t2.micro, t2.small, or t2.nano. Default is t2.micro.
+
+  InstanceAzParameter:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: us-east-1a
+    Description: Select an availability zone
+
+  DiskSizeParameter:
+    Type: Number
+    Default: 20
+    Description: Insert the disk size
+
 Resources:
  MyInstance:
     Type: AWS::EC2::Instance
     Properties:
-      AvailabilityZone: us-east-1a
+      AvailabilityZone: !Ref InstanceAzParameter
       ImageId: ami-a4c7edb2
-      InstanceType: t2.micro
+      InstanceType: !Ref InstanceTypeParameter
       Volumes:
         - Device: "/dev/sdn"
           VolumeId: !Ref Disk1
@@ -17,20 +37,20 @@ Resources:
  Disk1:
   Type: AWS::EC2::Volume
   Properties:
-    Size: 20
-    AvailabilityZone: us-east-1a
+    Size: !Ref DiskSizeParameter
+    AvailabilityZone: !Ref InstanceAzParameter
   DeletionPolicy: Snapshot
 
  Disk2:
   Type: AWS::EC2::Volume
   Properties:
-    Size: 20
-    AvailabilityZone: us-east-1a
+    Size: !Ref DiskSizeParameter
+    AvailabilityZone: !Ref InstanceAzParameter
   DeletionPolicy: Snapshot
 
  Disk3:
   Type: AWS::EC2::Volume
   Properties:
-    Size: 20
-    AvailabilityZone: us-east-1a
+    Size: !Ref DiskSizeParameter
+    AvailabilityZone: !Ref InstanceAzParameter
   DeletionPolicy: Snapshot
