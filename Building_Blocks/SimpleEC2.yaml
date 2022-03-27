@@ -1,11 +1,25 @@
 ---
+Parameters:
+  InstanceAzParameter:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: us-east-1a
+    Description: Select an availability zone
+  InstanceTypeParameter:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.nano
+    Description: Enter t2.micro, t2.small, or t2.nano. Default is t2.micro.
+
 Resources:
   MyInstance: # Could be any name
     Type: AWS::EC2::Instance
     Properties:
-      AvailabilityZone: us-east-1a
+      AvailabilityZone: !Ref InstanceAzParameter
       ImageId: ami-a4c7edb2
-      InstanceType: t2.micro
+      InstanceType: !Ref InstanceTypeParameter
       Tags:
         - Key: Name
-          Value: A Simple Value
+          Value: Name for EC2
