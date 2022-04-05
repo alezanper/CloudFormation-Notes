@@ -44,6 +44,13 @@ Parameters:
       - mysql
       - mariadb
       - postgres
+  Subnet1:
+    Description: Subnet for RDS
+    Type: AWS::EC2::Subnet::Id
+  Subnet2:
+    Description: Subnet for RDS
+    Type: AWS::EC2::Subnet::Id
+
 Resources:
   MyDB:
     Type: 'AWS::RDS::DBInstance'
@@ -55,3 +62,14 @@ Resources:
       Engine: !Ref DBEngineParameter
       MasterUsername: !Ref DBUsernameParameter
       MasterUserPassword: !Ref DBPasswordParameter
+      DBSubnetGroupName: !Ref SubnetGroup
+
+  SubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: Subnet group 
+      DBSubnetGroupName: mySubnetGroup
+      SubnetIds: 
+        - !Ref Subnet1
+        - !Ref Subnet2
+
