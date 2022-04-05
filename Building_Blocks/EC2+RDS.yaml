@@ -92,6 +92,7 @@ Resources:
       MasterUserPassword: !Ref pDBPassword
       DBSubnetGroupName: !Ref SubnetGroup
       Port: !Ref pPort
+      PubliclyAccessible: false
       VPCSecurityGroups: 
         - !GetAtt SecurityGroupRDS.GroupId
 
@@ -129,6 +130,12 @@ Resources:
           VolumeId: !Ref Disk2
         - Device: "/dev/sdo"
           VolumeId: !Ref Disk3
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            yum update
+            yum install mysql
 
   SecurityGroupEC2:
     Type: AWS::EC2::SecurityGroup
