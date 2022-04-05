@@ -1,19 +1,19 @@
 Parameters:
-  DBInstanceIDParameter:
+  pDBInstanceID:
     Default: mydbinstance
     Description: My database instance
     Type: String
     MinLength: '1'
     MaxLength: '63'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
-  DBNameParameter:
+  pDBName:
     Default: mydb
     Description: My database
     Type: String
     MinLength: '1'
     MaxLength: '64'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
-  DBInstanceClassParameter:
+  pDBInstanceClass:
     Default: db.t3.micro
     AllowedValues:
       - db.t3.micro
@@ -21,48 +21,57 @@ Parameters:
       - db.t3.medium
     Description: DB instance class
     Type: String
-  DBAStorageParameter:
+  pDBStorage:
     Default: 50
     Description: The size of the database (GB)
     Type: Number
     MinValue: 20
     MaxValue: 200
-  DBUsernameParameter:
+  pDBUsername:
     Description: Username for database
     Type: String
     MinLength: 1
     MaxLength: 16
-  DBPasswordParameter:
+    Default: Admin
+  pDBPassword:
     Description: Password for database access
     Type: String
     MinLength: '8'
     MaxLength: '41'
-  DBEngineParameter:
+  pDBEngine:
     Description: Engine for database
     Type: String
     AllowedValues:
       - mysql
       - mariadb
       - postgres
-  Subnet1:
+    Default: mysql
+  pSubnet1:
     Description: Subnet for RDS
     Type: AWS::EC2::Subnet::Id
-  Subnet2:
+  pSubnet2:
     Description: Subnet for RDS
     Type: AWS::EC2::Subnet::Id
+  pPort:
+    Description: Port for RDS
+    Type: String
+    Default: 3306
 
 Resources:
   MyDB:
     Type: 'AWS::RDS::DBInstance'
     Properties:
-      DBInstanceIdentifier: !Ref DBInstanceIDParameter
-      DBName: !Ref DBNameParameter
-      DBInstanceClass: !Ref DBInstanceClassParameter
-      AllocatedStorage: !Ref DBAStorageParameter
-      Engine: !Ref DBEngineParameter
-      MasterUsername: !Ref DBUsernameParameter
-      MasterUserPassword: !Ref DBPasswordParameter
+      DBInstanceIdentifier: !Ref pDBInstanceID
+      DBName: !Ref pDBName
+      DBInstanceClass: !Ref pDBInstanceClass
+      AllocatedStorage: !Ref pDBStorage
+      Engine: !Ref pDBEngine
+      MasterUsername: !Ref pDBUsername
+      MasterUserPassword: !Ref pDBPassword
       DBSubnetGroupName: !Ref SubnetGroup
+      Port: !Ref pPort
+      VPCSecurityGroups: 
+        - !GetAtt SecurityGroupRDS.GroupId
 
   SubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
@@ -70,6 +79,15 @@ Resources:
       DBSubnetGroupDescription: Subnet group 
       DBSubnetGroupName: mySubnetGroup
       SubnetIds: 
-        - !Ref Subnet1
-        - !Ref Subnet2
+        - !Ref pSubnet1
+        - !Ref pSubnet2
 
+  SecurityGroupRDS:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable port access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref pPort
+          ToPort: !Ref pPort
+          CidrIp: 0.0.0.0/0
