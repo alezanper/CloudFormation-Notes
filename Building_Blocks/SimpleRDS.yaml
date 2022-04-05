@@ -70,6 +70,7 @@ Resources:
       MasterUserPassword: !Ref pDBPassword
       DBSubnetGroupName: !Ref SubnetGroup
       Port: !Ref pPort
+      PubliclyAccessible: false
       VPCSecurityGroups: 
         - !GetAtt SecurityGroupRDS.GroupId
 
