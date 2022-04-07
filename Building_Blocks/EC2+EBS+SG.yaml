@@ -1,5 +1,5 @@
 Parameters:
-  InstanceTypeParameter:
+  pInstanceType:
     Type: String
     Default: t2.micro
     AllowedValues:
@@ -8,31 +8,54 @@ Parameters:
       - t2.nano
     Description: Enter t2.micro, t2.small, or t2.nano. Default is t2.micro.
 
-  InstanceAzParameter:
+  pInstanceAz:
     Type: AWS::EC2::AvailabilityZone::Name
     Default: us-east-1a
     Description: Select an availability zone
 
-  DiskSizeParameter:
+  pDiskSizeC:
     Type: Number
-    Default: 20
-    Description: Insert the disk size
+    Default: 50
+    Description: Insert the disk size for C
+
+  pDiskSizeD:
+    Type: Number
+    Default: 50
+    Description: Insert the disk size for D
+
+  pDiskSizeE:
+    Type: Number
+    Default: 50
+    Description: Insert the disk size for E
+
+  pKeyPair:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Keypair for connection
 
 Resources:
   MyInstance:
     Type: AWS::EC2::Instance
     Properties:
-      AvailabilityZone: !Ref InstanceAzParameter
-      ImageId: ami-a4c7edb2
-      InstanceType: !Ref InstanceTypeParameter
+      AvailabilityZone: !Ref pInstanceAz
+      ImageId: ami-0f9a92942448ac56f
+      InstanceType: !Ref pInstanceType
       SecurityGroups: [!Ref SSHSecurityGroup]
+      KeyName: !Ref pKeyPair
+      UserData:
+        Fn::Base64:
+          !Sub |
+          <powershell>
+            Stop-Service -Name ShellHWDetection
+            Get-Disk | Where PartitionStyle -eq 'raw' | Initialize-Disk -PartitionStyle MBR -PassThru | New-Partition -AssignDriveLetter -UseMaximumSize | Format-Volume -FileSystem NTFS -NewFileSystemLabel "Volume Label" -Confirm:$false
+            Start-Service -Name ShellHWDetection
+          </powershell>
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: !Ref pDiskSizeC
       Volumes:
-        - Device: "/dev/sdn"
-          VolumeId: !Ref Disk1
-        - Device: "/dev/sdm"
-          VolumeId: !Ref Disk2
-        - Device: "/dev/sdo"
-          VolumeId: !Ref Disk3
+        - Device: "/dev/sdb"
+          VolumeId: !Ref DiskD
 
   SSHSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -41,31 +64,31 @@ Resources:
       GroupDescription: Enable port 22
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: '22'
-          ToPort: '22'
+          FromPort: '3389'
+          ToPort: '3389'
           CidrIp: 0.0.0.0/0
 
 # Disks can be attached and deattached on fly
-  Disk1:
+  DiskD:
     Type: AWS::EC2::Volume
     Properties:
-      Size: !Ref DiskSizeParameter
-      AvailabilityZone: !Ref InstanceAzParameter
+      Size: !Ref pDiskSizeD
+      AvailabilityZone: !Ref pInstanceAz
     DeletionPolicy: Snapshot
 
-  Disk2:
+  DiskE:
    Type: AWS::EC2::Volume
    Properties:
-     Size: !Ref DiskSizeParameter
-     AvailabilityZone: !Ref InstanceAzParameter
+     Size: !Ref pDiskSizeE
+     AvailabilityZone: !Ref pInstanceAz
    DeletionPolicy: Snapshot
 
-  Disk3:
-   Type: AWS::EC2::Volume
-   Properties:
-     Size: !Ref DiskSizeParameter
-     AvailabilityZone: !Ref InstanceAzParameter
-   DeletionPolicy: Snapshot
+  MountPoint:
+    Type: AWS::EC2::VolumeAttachment
+    Properties:
+      InstanceId: !Ref MyInstance
+      VolumeId: !Ref DiskE
+      Device: /dev/sdc
 
 Outputs:
   PublicIp:
